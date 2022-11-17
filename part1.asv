@@ -1,0 +1,24 @@
+rays_in = [0 0 0 0; 0 0 0 0];
+M = [1 3 0 0; 0 1 0 0; 0 0 1 3; 0 0 0 1];
+propagation = M*sample_rays;
+
+
+
+
+rays=load('lightField.mat');
+%rays
+
+
+%rays2img(rays_x,rays_y,5,1200)
+
+%M = [1 3 0 0; 0 1 0 0; 0 0 1 3; 0 0 0 1];
+
+%propagation = M*rays.rays;
+%rays_x = propagation(1,1:end);
+%fns=fieldnames(rays);
+%rays_x
+%rays_y = propagation(3, 1:end);
+%rays2img(rays_x,rays_y,5,1200)
+%ray_z = [zeros(1,size(rays.rays,2)); 3*ones(1,size(rays.rays,2))];
+%figure;
+%plot(ray_z, [rays.rays(1,:); propagation(1,:)]);
