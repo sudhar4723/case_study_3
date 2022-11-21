@@ -5,7 +5,7 @@ clc; clear; close all;
 angles = linspace(-pi/20, pi/20,5);
 d = 0.2;
 M = matrix_prop(d);
-% Rays in at x = 0.01 m
+% Rays_in at x = 0.01 m
 rays_in = [
     0.01*ones(1,size(angles,2));
     angles;
@@ -13,7 +13,7 @@ rays_in = [
     zeros(1,size(angles,2));
    ];
 
-% Rays in at x = 0 m
+% Rays_in  at x = 0 m
 rays_in_B = [
     zeros(1,size(angles,2));
     angles;
@@ -77,13 +77,36 @@ M2 = matrix_prop(d2);
 % Plot the figure
 figure
 plotBend(rays_in_B,M,d,M2*Mf,d2,'red');
-
 plotBend(rays_in,M, d,M2*Mf,d2,'blue');
 hold off;
 
 %% 2.3)
 
-figure 
+% Defining distances and focal point
+d1 = -1;
+f = 0.5;
+d2 = f*d1/(d1-f);
+
+% Matricies descbre how lights behave
+M1 = matrix_prop(d1);
+Mf = matrix_bend(f);
+M2 = matrix_prop(d2);
+
+% Bend by f that propogates by d2
+processedRays =  M2*Mf*M1*rays;
+
+raysX = processedRays(1,:);
+raysY = processedRays(3,:);
+
+rays2img(raysX,raysY,sens_width,pixels_count);
+
+% Sensor constants
+sens_width = 0.005;
+pixels_count = 200;
+
+title(sprintf('Sensor width = %.3f m, pixels count = %.0f, processed', sens_width, pixels_count), FontSize=9)
+
+
 
 
 
@@ -111,23 +134,17 @@ end
 % d2 is the distance that the rays travel after getting bent
 % color is the color of the rays
 
-function plotBend(rays, d, M2Mf,d2, color)
-
-M = matrix_prop(d);
-M2 = matrix_prop(d2);
-Mf = matrix_bend
+function plotBend(rays, M, d, M2Mf,d2, color)
 
 rays_out = M*rays;
 rays_bend = M2Mf*rays_out;
-
-
 z_pos = [0 d d+d2];
 
 plot(z_pos, [rays(1,:); rays_out(1,:); rays_bend(1,:) ],'color', color)
 hold on;
 end
 
-% Generate a matrix that describes how light travel d(m)
+% Generate a matrix that describes how lights travel d(m)
 function [M] = matrix_prop(d)
 M = [
 1 d 0 0;
@@ -137,7 +154,7 @@ M = [
 ];
 end
 
-% Generate a matrix that describes how light 
+% Generate a matrix that describes how lights bend
 function [Mf] = matrix_bend(f)
 Mf = [
 1       0   0       0;
