@@ -1,4 +1,7 @@
 clc; clear; close all;
+
+load('lightField.mat')
+
 %% PART 1.2
 
 % Initalize constants
@@ -32,8 +35,6 @@ hold off;
 
 %% Part 1.3
 
-load('lightField.mat')
-
 % Get X and Y rays
 raysX = rays(1,:);
 raysY = rays(3,:);
@@ -53,7 +54,7 @@ raysD = M * rays;
 % Sensor constants
 sens_width = 0.005;
 pixels_count = 200;
-% Get X and Y rays
+% Get X and Y rays 
 raysX = raysD(1,:);
 raysY = raysD(3,:);
 rays2img(raysX,raysY,sens_width,pixels_count);
@@ -83,8 +84,8 @@ hold off;
 %% 2.3)
 
 % Defining distances and focal point
-d1 = -1;
-f = 0.5;
+d1 = 0.2;
+f = 0.05;
 d2 = f*d1/(d1-f);
 
 % Matricies descbre how lights behave
@@ -97,14 +98,29 @@ processedRays =  M2*Mf*M1*rays;
 
 raysX = processedRays(1,:);
 raysY = processedRays(3,:);
-
 rays2img(raysX,raysY,sens_width,pixels_count);
 
+
 % Sensor constants
-sens_width = 0.005;
+sens_width = 0.5;
 pixels_count = 200;
 
 title(sprintf('Sensor width = %.3f m, pixels count = %.0f, processed', sens_width, pixels_count), FontSize=9)
+
+
+%% 3)
+
+d = 0.01;
+invM = matrix_prop(d);
+
+revertRays =  invM*rays;
+
+raysX = revertRays(1,:);
+raysY = revertRays(3,:);
+
+rays2img(raysX,raysY,sens_width,pixels_count);
+
+title(sprintf('Sensor width = %.3f m, pixels count = %.0f, revert', sens_width, pixels_count), FontSize=9)
 
 
 
@@ -161,5 +177,15 @@ Mf = [
 -1/f    1   0       0;
 0       0   1       0;
 0       0   -1/f    1;
+];
+end
+
+% Inverse of M
+function [M] = matrix_inverse(d)
+M = [
+1 -d 0 0;
+0 1 0 0;
+0 0 1 -d;
+0 0 0 1;
 ];
 end
